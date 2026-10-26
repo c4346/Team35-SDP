@@ -32,7 +32,7 @@ void loop() {
 
     // BLUE
     Serial.println("LED: BLUE");
-    neopixelWrite(RGB_BUILTIN, 0, 0, BRIGHTNESS);
+    neopixelWrite(RGB_BUILTIN, 0, BRIGHTNESS, BRIGHTNESS);
     delay(500);
 
     // OFF
