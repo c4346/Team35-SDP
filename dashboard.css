@@ -1,0 +1,326 @@
+/* ===== Theme tokens ===== */
+:root {
+  --bg: #F2F0EF  ;
+  --panel: #ffffff;
+  --text: #15181b;
+  --muted: #5f666d;
+  --line: #d8d6d0;
+  --grid: #e4e2dc;
+  --ok: #2a9d4b;                     /* green → --warn amber → --bad red */
+  --mid: #d4b106;                    /* yellow midpoint of the dial gradient */
+  --warn: #b8700a;
+  --bad: #c2332b;
+  --brand: #771010;
+  --c1: #1a6fa0;
+  --c2: #6a4fc4;
+  --c3: #1f8a68;
+  --c4: #9a7420;
+  --brake: #6a4fc4;
+
+  --font-display: "Barlow Condensed", "Arial Narrow", serif;
+  --font-body: Barlow, system-ui, Arial, serif;
+  --font-mono: ui-monospace, Menlo, Consolas, monospace;
+}
+
+/* ===== Base ===== */
+*, *::before, *::after { box-sizing: border-box; }
+
+[hidden] { display: none !important; }
+
+html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+
+body {
+  margin: 0;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background: var(--bg);
+  color: var(--text);
+  font: 15px/1.4 var(--font-body);
+}
+
+button {
+  font: inherit;
+  color: var(--text);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 6px 14px;
+  cursor: pointer;
+}
+button:focus-visible {
+  outline: 2px solid var(--ok);
+  outline-offset: 2px;
+}
+
+/* ===== Header ===== */
+header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 24px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
+  border-left: 6px solid var(--brand);
+}
+
+h1 {
+  margin: 0;
+  font: 700 22px var(--font-display);
+  line-height: 0;                    /* no extra space under the logo image */
+}
+.logo { display: block; height: 40px; width: auto; }
+
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 18px;
+  color: var(--muted);
+}
+.stats b { color: var(--text); }
+
+.dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 6px;
+  border-radius: 50%;
+  background: var(--ok);
+}
+
+/* ===== Layout ===== */
+main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px;
+  transition: opacity 0.3s;
+}
+main.stale { opacity: 0.4; }
+
+.grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  grid-auto-flow: row dense;         /* let small cards fill gaps beside tall ones */
+}
+.big { grid-column: span 2; }
+.tyre-card { grid-row: span 2; }
+@media (max-width: 520px) {
+  .big { grid-column: auto; }
+  .tyre-card { grid-row: auto; }
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 12px;
+  text-align: center;
+}
+
+h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+/* ===== Shift light ===== */
+.shift { display: flex; gap: 6px; margin-bottom: 14px; }
+.shift i {
+  flex: 1;
+  height: 14px;
+  border-radius: 3px;
+  background: var(--grid);
+}
+.shift i.on  { background: var(--ok); }
+.shift i.hot { background: var(--warn); }
+.shift i.max { background: var(--bad); }
+
+/* ===== Gauges ===== */
+.gauge { width: 100%; max-width: 320px; }
+.gauge .track,
+.gauge .fill {
+  fill: none;
+  stroke-width: 11;
+  stroke-linecap: round;
+}
+.gauge .track { stroke: var(--grid); }
+/* Fill stroke is a per-dial green→red gradient set in dashboard.js (arcGradient). */
+.gauge .fill { transition: stroke-dasharray 0.08s linear; }
+/* Alarm state now tints the number instead of the arc, so the gradient stays visible. */
+.gauge.warn .value { fill: var(--warn); }
+.gauge.bad  .value { fill: var(--bad); }
+
+.gauge .value {
+  font: 700 44px var(--font-display);
+  fill: var(--text);
+  text-anchor: middle;
+}
+.gauge .unit,
+.gauge .limit {
+  font-size: 12px;
+  fill: var(--muted);
+  text-anchor: middle;
+}
+
+/* ===== Gear ===== */
+.gear-card { display: flex; flex-direction: column; align-items: center; }
+.gear-value {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  font: 700 112px/1 var(--font-display);
+  font-variant-numeric: tabular-nums;
+}
+.gear-strip { display: flex; gap: 4px; width: 100%; margin-top: 8px; }
+.gear-strip span {
+  flex: 1;
+  padding: 3px 0;
+  border-radius: 4px;
+  background: var(--grid);
+  color: var(--muted);
+  font: 600 14px var(--font-display);
+}
+.gear-strip span.on { background: var(--text); color: var(--panel); }
+
+/* ===== Fuel ===== */
+.fuel-card { display: flex; flex-direction: column; justify-content: center; gap: 10px; }
+.fuel-value { font: 700 44px/1 var(--font-display); font-variant-numeric: tabular-nums; }
+.fuel-value small { margin-left: 2px; font-size: 18px; color: var(--muted); }
+/* One continuous bar. Bottom layer is the dial gradient (--grad, set in dashboard.js);
+   top layer greys out everything past the fuel level (--p, 0–1). */
+.fuel-bar {
+  --p: 0;
+  height: 36px;
+  border-radius: 6px;
+  background:
+    linear-gradient(90deg, transparent calc(var(--p) * 100%), var(--grid) 0),
+    var(--grad);
+}
+/* Alarm state tints the number, like the dials, so the gradient stays visible. */
+.fuel-card.warn .fuel-value { color: var(--warn); }
+.fuel-card.bad  .fuel-value { color: var(--bad); }
+.fuel-scale {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* ===== Tyres (full-circle rings, 2×2 like the car) ===== */
+.tyre-front { margin-top: 4px; font-size: 12px; color: var(--muted); }
+.tyre-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 150px));
+  justify-content: center;
+  gap: 8px 28px;
+  margin-top: 6px;
+}
+.ring { --p: 0; position: relative; width: 100%; aspect-ratio: 1; }
+.ring svg { position: relative; display: block; width: 100%; }
+/* Top layer greys out the unfilled part (track); bottom layer is the green → red gradient.
+   The mask cuts it to a band matching the old r=48, 10-wide stroke in a 120 box. */
+.ring-band {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background:
+    conic-gradient(transparent calc(var(--p) * 1turn), var(--grid) 0),
+    conic-gradient(var(--ok), var(--mid), var(--warn), var(--bad));
+  -webkit-mask: radial-gradient(closest-side, transparent 71.5%, #000 72%, #000 88%, transparent 88.5%);
+          mask: radial-gradient(closest-side, transparent 71.5%, #000 72%, #000 88%, transparent 88.5%);
+}
+/* Alarm state tints the number, like the dials, so the gradient stays visible. */
+.ring.warn .value { fill: var(--warn); }
+.ring.bad  .value { fill: var(--bad); }
+.ring text { text-anchor: middle; }
+.ring .pos   { font: 600 12px var(--font-body); fill: var(--muted); }
+.ring .value { font: 700 28px var(--font-display); fill: var(--text); }
+.ring .unit  { font-size: 11px; fill: var(--muted); }
+
+/* ===== Bars ===== */
+.bar {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: 10px;
+  height: 160px;
+  margin-top: 10px;
+}
+.bar-scale {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--muted);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.bar-track {
+  position: relative;
+  width: 44px;
+  border-radius: 6px;
+  background: var(--grid);
+  overflow: hidden;
+}
+.bar-fill {
+  position: absolute;
+  inset: 0;
+  background: var(--brake);
+  transform: scaleY(0);
+  transform-origin: bottom;
+  transition: transform 0.08s linear;
+}
+.bar-peak {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 3px;
+  margin-bottom: -1.5px;
+  background: var(--text);
+  opacity: 0;
+  transition: bottom 0.08s linear, opacity 0.3s;
+}
+.bar-readout {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  min-width: 64px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.bar-value {
+  font: 700 44px/1 var(--font-display);
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+.bar-peak-label { margin-top: 6px; font-size: 12px; }
+
+/* ===== Traces ===== */
+.trace-card { grid-column: 1 / -1; text-align: left; }
+.trace-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 8px;
+}
+.trace-head b { font: 700 28px var(--font-display); font-variant-numeric: tabular-nums; }
+.trace-span { font-weight: 400; }
+canvas { display: block; width: 100%; height: 160px; }
+
+/* ===== Footer bits ===== */
+.raw { margin-top: 16px; color: var(--muted); }
+pre {
+  overflow-x: auto;
+  margin: 8px 0 0;
+  padding: 10px 14px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font: 12px/1.5 var(--font-mono);
+  color: var(--text);
+}
+

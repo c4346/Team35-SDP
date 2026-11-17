@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Minute Man telemetry dashboard</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600&family=Barlow+Condensed:wght@500;700&display=swap">
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+
+<body>
+  <header>
+    <h1><img class="logo" src="logo.png" alt="Minute Man telemetry"></h1>
+
+    <div class="stats">
+      <span><i class="dot" id="link-dot"></i><b id="link-label">Live</b></span>
+      <span id="frame-rate">0 frames/s</span>
+      <span id="error-count">0 CRC errors, 0 missed</span>
+      <span id="data-age">0 ms old</span>
+      <button id="drop-link">Drop link</button>
+    </div>
+  </header>
+
+  <main id="main">
+    <section id="dials">
+      <div class="shift" id="shift-light">
+        <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+      </div>
+      <div class="grid" id="gauge-grid"></div>
+    </section>
+
+    <!-- Raw JSON feed: uncomment to see the last few lines from the base station.
+    <details class="raw">
+      <summary>This is a fake JSON lines in the same format the ESP32 will print</summary>
+      <pre id="raw-feed"></pre>
+    </details>
+    -->
+
+    <!--
+      All values are fake. To go live, replace fakeTick() with a USB serial reader
+      that passes each text line to onLine().
+    -->
+  </main>
+
+  <!-- CAN signal map: frame ID → list of signals packed in its data bytes (little-endian). -->
+  <script type="application/json" id="channel-file">
+    {
+      "0x100": [
+        { "name": "rpm", "start": 0, "bytes": 2, "scale": 1,     "offset": 0 },
+        { "name": "spd", "start": 2, "bytes": 2, "scale": 0.1,   "offset": 0 },
+        { "name": "thr", "start": 4, "bytes": 1, "scale": 1,     "offset": 0 },
+        { "name": "brk", "start": 5, "bytes": 2, "scale": 1,     "offset": 0 },
+        { "name": "gear", "start": 7, "bytes": 1, "scale": 1,    "offset": 0 }
+      ],
+      "0x101": [
+        { "name": "clt", "start": 0, "bytes": 2, "scale": 0.1,   "offset": -40 },
+        { "name": "bat", "start": 2, "bytes": 2, "scale": 0.001, "offset": 0 },
+        { "name": "oil", "start": 4, "bytes": 2, "scale": 0.1,   "offset": 0 }
+      ],
+      "0x102": [
+        { "name": "fuel", "start": 0, "bytes": 1, "scale": 0.5,  "offset": 0 },
+        { "name": "tfl",  "start": 1, "bytes": 1, "scale": 0.2,  "offset": 0 },
+        { "name": "tfr",  "start": 2, "bytes": 1, "scale": 0.2,  "offset": 0 },
+        { "name": "trl",  "start": 3, "bytes": 1, "scale": 0.2,  "offset": 0 },
+        { "name": "trr",  "start": 4, "bytes": 1, "scale": 0.2,  "offset": 0 }
+      ]
+    }
+  </script>
+
+  <script src="dashboard.js"></script>
+</body>
+</html>
